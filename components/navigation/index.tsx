@@ -14,9 +14,10 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { UserButton } from '@clerk/nextjs';
+import Link from 'next/link';
 
 
-const pages = ['Products', 'Pricing', 'Blog'];
+const pages = [{displayName: 'Home', route: "/home"}, {displayName: 'My Plants', route: "/my-plants"}];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 const Navigation = () => {
@@ -39,26 +40,37 @@ const Navigation = () => {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{bgcolor: "#EEF0E5", color: "#163020" }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+          
           <Typography
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/home"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
+              // fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            <img
+            src={"/logo.png"}
+            alt={"My little tree"}
+            loading="lazy"
+            style={{
+              display: 'flex',
+              flexGrow: 1,
+              maxWidth:'36px'
+            }}
+          />
+            My Little Tree
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -68,7 +80,8 @@ const Navigation = () => {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
-              color="inherit"
+              
+              sx={{color: "#3304D30"}}
             >
               <MenuIcon />
             </IconButton>
@@ -88,17 +101,33 @@ const Navigation = () => {
               onClose={handleCloseNavMenu}
               sx={{
                 display: { xs: 'block', md: 'none' },
+                color: "#163020"
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+              {pages.map(({route,displayName}) => (
+                <Link key={displayName} href={route}>
+                  <Typography textAlign="center">{displayName}</Typography>
+                </Link>
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
+          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+          {/* <img
+            src={"/logo.png"}
+            alt={"My little tree"}
+            loading="lazy"
+            style={{
+              display: 'flex',
+              flexGrow: 1,
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
+              maxWidth:'36px'
+            }}
+          /> */}
+          {/* <Typography
             variant="h5"
             noWrap
             component="a"
@@ -114,18 +143,23 @@ const Navigation = () => {
               textDecoration: 'none',
             }}
           >
-            LOGO
-          </Typography>
+            My Little Tree
+          </Typography> */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {/* {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+                sx={{ my: 2, color: '#163020', display: 'block' }}
               >
                 {page}
               </Button>
-            ))}
+            ))} */}
+            {pages.map(({route,displayName}) => (
+                <Link key={displayName} href={route}>
+                  <Typography textAlign="center">{displayName}</Typography>
+                </Link>
+              ))}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -135,7 +169,7 @@ const Navigation = () => {
               </IconButton>
             </Tooltip> */}
             <UserButton />
-            <Menu
+            {/* <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"
               anchorEl={anchorElUser}
@@ -156,7 +190,7 @@ const Navigation = () => {
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
-            </Menu>
+            </Menu> */}
           </Box>
         </Toolbar>
       </Container>
