@@ -1,9 +1,9 @@
 
  
 export default function Page({params}) {
-  return <div>
+  return (<div>
 
 <p>Plant: {params.id}</p><div>segundo</div>
-  </div>
+  </div>)
   
 }
