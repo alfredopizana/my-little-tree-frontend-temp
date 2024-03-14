@@ -1,5 +1,9 @@
 
  
 export default function Page({params}) {
-  return <p>Plant: {params.id}</p>
+  return <div>
+
+<p>Plant: {params.id}</p><div>segundo</div>
+  </div>
+  
 }
