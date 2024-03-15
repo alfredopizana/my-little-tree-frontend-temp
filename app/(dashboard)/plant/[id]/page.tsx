@@ -9,7 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
-const PlantPage = () => {
+const PlantPage = ({params}) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -37,7 +37,7 @@ const PlantPage = () => {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h2" >
-            Plant Name 1
+            Plant Name {params.id}
           </Typography>
           <Typography variant="h6" gutterBottom>
             Plant Type
