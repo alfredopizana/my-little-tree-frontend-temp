@@ -1,11 +1,13 @@
 "use client"
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, Typography} from "@mui/material"
+import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, Stack, Typography} from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import CircleIcon from '@mui/icons-material/Circle';
+import EditIcon from '@mui/icons-material/Edit';
 import { DateCalendar } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 const PlantPage = () => {
 
@@ -13,9 +15,9 @@ const PlantPage = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
   <Container maxWidth="lg">  <Grid container spacing={2} mt={10}>
     <Box>
-      <Grid container spacing={2}>
+      <Grid container spacing={20}>
         <Grid item xs={6}>
-          <div style={{borderRadius: '20px', overflow: 'hidden', width:"500px", height: "500px"}}>
+          <div style={{borderRadius: '20px', overflow: 'hidden', width:"580px", height: "580px"}}>
             <CardMedia
               component="img"
               image="https://picsum.photos/400/400"
@@ -47,10 +49,16 @@ const PlantPage = () => {
                   <img src="/iconWater.svg" style={{width:"80px", height: "80px"}}/>
                 </Grid>
                 <Grid item xs={8}>
-                  <Typography variant="body1" display="block" gutterBottom>
-                    2 days left
-                  </Typography>
-                  <CircleIcon style={{color:"#304D30"}}/>
+                  <Stack 
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="flex-start"
+                      spacing={2}>
+                    <Typography variant="body1" display="block" gutterBottom>
+                      2 days left
+                    </Typography>
+                    <CircleIcon style={{color:"#304D30"}}/>
+                  </Stack>
                   <Typography variant="body2" display="block" >
                     once every 2 weeks
                   </Typography>
@@ -63,10 +71,16 @@ const PlantPage = () => {
                   <img src="/iconFertilizer.svg" style={{width:"60px", height: "60px"}}/>
                 </Grid>
                 <Grid item xs={8}>
-                  <Typography variant="body1" display="block" gutterBottom>
-                    24 days left
-                  </Typography>
-                  <CircleIcon style={{color:"#DB613A"}}/>
+                  <Stack 
+                    direction="row"
+                    justifyContent="flex-start"
+                    alignItems="flex-start"
+                    spacing={2}>
+                    <Typography variant="body1" display="block" gutterBottom>
+                      24 days left
+                    </Typography>
+                    <CircleIcon style={{color:"#DB613A"}}/>
+                  </Stack>
                   <Typography variant="body2" display="block" >
                     once every 2 months
                   </Typography>
@@ -79,16 +93,17 @@ const PlantPage = () => {
             any other extra comment we would like to have as part of the plant 
             information. 
           </Typography>
-          <Typography variant="body2" align={"left"} gutterBottom >
-              February 2024
-          </Typography>
-          <Box>
-            <DateCalendar />
-          </Box>
-          <Box>
+          
+          <DemoContainer components={['DateCalendar']} sx={{alignItems: "center"}}>
+            <DateCalendar views={['day']} readOnly />
+          </DemoContainer>
+          <Stack 
+            direction="row"
+            justifyContent="space-around"
+            alignItems="center">
             <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Water</Button>
             <Button variant="contained" style={{background:"#DB613A", width: "120px"}}>Fertilize</Button> 
-          </Box>          
+          </Stack>          
         </Grid>
       </Grid>
     </Box>
@@ -108,21 +123,22 @@ const PlantPage = () => {
                         image="https://picsum.photos/400/300"
                         alt="Paella dish"
                     />
-                    <CardContent>
-                        <Typography variant="body2" color="text.secondary">
-                        This impressive paella is a perfect party dish and a fun meal to cook
-                        together with your guests. Add 1 cup of frozen peas along with the mussels,
-                        if you like.
-                        </Typography>
-                    </CardContent>
-                    <CardActions disableSpacing>
-                        <IconButton aria-label="add to favorites">
-                            <FavoriteIcon />
-                        </IconButton>
-                        <IconButton aria-label="share">
-                            <ShareIcon />
-                        </IconButton>
-                    </CardActions>
+                      <CardContent>
+                          <Typography variant="body2" color="text.secondary">
+                          This paragraph is just the description of the image post I did linked to this specific plant.
+                          </Typography>
+                      </CardContent>
+                        <CardActions >
+                        <IconButton aria-label="add to favorites" size="small" >
+                                <FavoriteIcon sx={{ height: 20, width: 20 }} />
+                            </IconButton>
+                            <IconButton aria-label="share" size="small" >
+                                <ShareIcon sx={{ height: 20, width: 20 }}/>
+                            </IconButton>
+                            <IconButton aria-label="edit" size="small" >
+                                <EditIcon sx={{ height: 20, width: 20 }} />
+                            </IconButton>
+                        </CardActions>
                     </Card>
                 </Grid>
             ))
