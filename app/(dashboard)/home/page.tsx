@@ -11,7 +11,7 @@ const HomePage = ()=>{
     <Grid container spacing={2} mt={2}>
             
     <h1>Esto es home</h1>
-            <CustomButton title="Custom title"/> 
+            <CustomButton title="me gusta el pan dulce"/> 
             <AccessAlarmIcon />
         <Grid item xs={12}>
         <Box
