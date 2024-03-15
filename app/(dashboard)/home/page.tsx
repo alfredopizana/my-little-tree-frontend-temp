@@ -4,9 +4,15 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-
+import CustomButton from '@/components/CustomButton'
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
 const HomePage = ()=>{
-    return (<Container maxWidth="lg"> <Grid container spacing={2} mt={2}>
+    return (<Container maxWidth="lg"> 
+    <Grid container spacing={2} mt={2}>
+            
+    <h1>Esto es home</h1>
+            <CustomButton title="Custom title"/> 
+            <AccessAlarmIcon />
         <Grid item xs={12}>
         <Box
         my={4}
