@@ -13,7 +13,6 @@ const HomePage = ()=>{
     return (<Container maxWidth="lg"> 
   
     <Grid container spacing={2} mt={2}>
-     
         <Grid item xs={12}>
         <Box mb={5}>
      <form>
