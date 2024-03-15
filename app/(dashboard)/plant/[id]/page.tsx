@@ -1,11 +1,17 @@
+"use client"
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, Typography} from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import CircleIcon from '@mui/icons-material/Circle';
+import { DateCalendar } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 const PlantPage = () => {
 
-  return (<Container maxWidth="lg">  <Grid container spacing={2} mt={10}>
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <Container maxWidth="lg">  <Grid container spacing={2} mt={10}>
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={6}>
@@ -76,7 +82,9 @@ const PlantPage = () => {
           <Typography variant="body2" align={"left"} gutterBottom >
               February 2024
           </Typography>
-
+          <Box>
+            <DateCalendar />
+          </Box>
           <Box>
             <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Water</Button>
             <Button variant="contained" style={{background:"#DB613A", width: "120px"}}>Fertilize</Button> 
@@ -123,6 +131,7 @@ const PlantPage = () => {
         
     </Grid>
     </Container>
+    </LocalizationProvider>
     )
 }
 
