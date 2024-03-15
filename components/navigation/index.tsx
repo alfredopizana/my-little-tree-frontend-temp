@@ -107,7 +107,7 @@ const Navigation = () => {
             >
               {pages.map(({route,displayName}) => (
                 <Link key={displayName} href={route}>
-                  <Typography textAlign="center">{displayName}</Typography>
+                  <Typography textAlign="center" sx={{mx:2}}>{displayName}</Typography>
                 </Link>
               ))}
             </Menu>
@@ -117,7 +117,7 @@ const Navigation = () => {
            
             {pages.map(({route,displayName}) => (
                 <Link key={displayName} href={route}>
-                  <Typography textAlign="center">{displayName}</Typography>
+                  <Typography textAlign="center" sx={{mx:1}}>{displayName}</Typography>
                 </Link>
               ))}
           </Box>
