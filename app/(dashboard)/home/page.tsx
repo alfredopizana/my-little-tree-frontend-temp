@@ -6,25 +6,34 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CustomButton from '@/components/CustomButton'
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from "@mui/icons-material/Search";
+
 const HomePage = ()=>{
     return (<Container maxWidth="lg"> 
+  
     <Grid container spacing={2} mt={2}>
-            
-    <h1>Esto es home</h1>
-            <CustomButton title="Custom title"/> 
-            <AccessAlarmIcon />
         <Grid item xs={12}>
-        <Box
-        my={4}
-        display="flex"
-        alignItems="center"
-        gap={4}
-        p={2}
-        sx={{ border: '2px solid grey' }}
-        >
-      <TextField id="outlined-basic" label="Outlined" variant="outlined" />
-        <h1>Es un titulo</h1>
-        <div style={{backgroundColor:"red",borderRadius: "4px", padding:"4px"}}>Custom Code </div>
+        <Box mb={5}>
+     <form>
+            <TextField
+            id="search-bar"
+            className="text"
+            placeholder="Search posts, plant names, friends, etc..."             
+            fullWidth     
+            InputProps={{
+                style: { background:"#EEF0E5", border:"#EEF0E5"},
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton type="submit" aria-label="search">
+                        <SearchIcon style={{ fill: "black" }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />             
+            
+        </form>  
     </Box>
 
         </Grid>

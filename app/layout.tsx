@@ -6,6 +6,8 @@ import theme from '../theme/theme';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ClerkProvider } from "@clerk/nextjs";
 import Navigation from "@/components/navigation";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,7 +26,6 @@ export default function RootLayout({
           <AppRouterCacheProvider>
             <CssBaseline />
               <ThemeProvider theme={theme}>
-
                 <Navigation />
                 {children}
               </ThemeProvider>
