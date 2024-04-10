@@ -9,13 +9,16 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { top100Films } from '@/theme/globalVariables'
+import { VisuallyHiddenInput } from '@/theme/globalVariables'
 
 const NewPublish = ()=>{
     return (
         <Container maxWidth="xs">
         <Grid container spacing={2} mt={2}>
 
-        <h1>New Post</h1>
+        <h1>
+        New Post
+        </h1>
 
 {/*Codigo de la imagen como CARD*/}
         <Grid item xs={12} md={12} lg={12}>
@@ -29,14 +32,19 @@ const NewPublish = ()=>{
             </Card>
         </Grid>
 {/*Codigo del Boton para subir archivos*/}
+        <Grid container direction="row" alignItems="center" justifyContent="center" marginTop="3px">
         <Button
+            style={{background:"#DB613A"}}
             component="label"
             role={undefined}
             variant="contained"
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
         >
+        Upload file
+        <VisuallyHiddenInput type="file" />
         </Button>
+        </Grid>
 
         <Box
             component="form"
@@ -50,6 +58,7 @@ const NewPublish = ()=>{
                 <TextField
                 id="outlined-multiline-static"
                 label="Description"
+                InputProps={{ style: { background:"#EEF0E5", border:"#EEF0E5"} }}
                 multiline
                 rows={4}
                 defaultValue="Please enter a description for your post"
@@ -65,7 +74,7 @@ const NewPublish = ()=>{
             id="tags-outlined"
             options={top100Films}
             getOptionLabel={(option) => option.title}
-            defaultValue={[top100Films[0]]}
+            style={{ background:"#EEF0E5", border:"#EEF0E5" }}
             filterSelectedOptions
             renderInput={(params) => (
             <TextField
@@ -77,6 +86,18 @@ const NewPublish = ()=>{
         />
         </Stack>
         </Container>
+
+{/*Codigo de los botones cancel y publish*/}
+        <Grid container direction="row" alignItems="center" justifyContent="flex-end" marginTop="40px">
+        <Stack 
+            spacing={{ xs: 1, sm: 2, md: 5 }}
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center">
+            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Cancel</Button>
+            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Publish</Button>
+        </Stack>
+        </Grid>
 
         </Grid>
         </Container>
