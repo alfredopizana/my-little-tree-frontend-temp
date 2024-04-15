@@ -12,8 +12,24 @@ import { DateCalendar } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import PlantCard from "@/components/PlantCard";
 
-const My_Plants = ()=>{
+// async function getData() {
+//     const res = await fetch('http://localhost:8080/plants')
+//     // The return value is *not* serialized
+//     // You can return Date, Map, Set, etc.
+   
+//     if (!res.ok) {
+//       // This will activate the closest `error.js` Error Boundary
+//       throw new Error('Failed to fetch data')
+//     }
+   
+//     return res.json()
+// }
+
+const My_Plants = () => {
+    // const response = await getData();
+    // const plants = response.data.plants;
     return (
     
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -73,39 +89,13 @@ const My_Plants = ()=>{
         <Stack spacing={5} direction="row" justifyContent="flex-start" alignItems="center" >
     {/*1er Grid*/}
     <Grid item xs={1} md={1} lg={2.175}>
-        <Card sx={{ minWidth: 180 }}>
-            <CardMedia
-            component="img"
-            height="180"
-            image="https://picsum.photos/400/300"
-            alt="Paella dish"
-            />
-            <CardContent>
-                <Typography sx={{ fontSize: 24 }} color="#304D30">
-                Petra
-                </Typography>
-                <Typography sx={{ fontSize: 16 }} color="#304D30">
-                Garra de Leon
-                </Typography>
-                <Typography sx={{ fontSize: 13 }} color="#304D30">
-                A small description about your plant...
-                </Typography>
-            </CardContent>
-            <CardActions disableSpacing>
-                 <IconButton aria-label="watering">
-                    <img src="/iconWater.svg" style={{width:"33px", height: "33px"}}/>
-                </IconButton>
-                <Typography sx={{ fontSize: 11 }} color="#304D30">
-                2d left
-                </Typography>
-                <IconButton aria-label="fertilize">
-                    <img src="/iconFertilizer.svg" style={{width:"23px", height: "23px"}}/>
-                </IconButton>
-                <Typography sx={{ fontSize: 11 }} color="#304D30">
-                2w left
-                </Typography>
-            </CardActions>
-        </Card>
+        {/* {
+                plants && plants.map((plant, index)=>(
+                    <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+                        <PlantCard plant={plant} />
+                    </Grid>
+                ))
+            } */}
     </Grid>
     {/*2o Grid*/}
     <Grid item xs={1} md={1} lg={2.175}>

@@ -6,9 +6,33 @@ import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from "@mui/icons-material/Search";
 import PlantIcon from "@/public/iconPlant.svg";
 import Image from "next/image";
+import PostCard from "@/components/PostCard";
+import { auth } from "@clerk/nextjs";
 
+async function getData() {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/`)
+        // The return value is *not* serialized
+        // You can return Date, Map, Set, etc.
+       
+        if (!res.ok) {
+          // This will activate the closest `error.js` Error Boundary
+          throw new Error('Failed to fetch data')
+        }
+       
+        return res.json()
+    } catch (error) {
+        console.log({error})
+        throw new Error('Failed to fetch data')
+    }
+       
+  }
 
-const HomePage = ()=>{
+const HomePage = async ()=>{
+    
+    const response = await getData();
+    const posts = response?.data?.posts;
+    const { userId } = auth();
     return (<Container maxWidth="lg"> 
   
     <Grid container spacing={2} mt={2}>
@@ -39,53 +63,16 @@ const HomePage = ()=>{
             
         </form>  
     </Box>
-
+              {userId}
         </Grid>
-        {
-            Array(5).fill(1).map((a, index)=>(
-                <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
-                    <Card sx={{background : '#F7F8F7'}}>
-                        <CardMedia
-                            component="img"
-                            height="194"
-                            image="https://picsum.photos/400/300"
-                            alt="Paella dish" 
-                        />
-                    <CardContent>                    
-                    <Grid container spacing={2}>
-                        <Grid item xs={1}>
-                        <Image
-                            priority
-                            src={PlantIcon}
-                            alt="Plant Name"
-                            /> 
-                        </Grid> 
-                        <Grid item xs={11}>
-                            Limonsito
-                        </Grid>                                          
+            {
+                posts && posts.map((post, index)=>(
+                    <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+                        <PostCard post={post} />
                     </Grid>
-                    <Typography variant="h5" color="text.primary" my={2}>
-                        Thomas just added a new plant!
-                    </Typography>
-                    <Typography variant="body1" color="text.primary">
-                        This impressive paella is a perfect party dish and a fun meal to cook
-                        together with your guests. Add 1 cup of frozen peas along with the mussels,
-                        if you like.
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary"> 3 days ago </Typography>
-                    </CardContent>
-                    <CardActions disableSpacing>                        
-                        <IconButton aria-label="share">
-                            <ShareIcon />
-                        </IconButton>
-                    </CardActions>
-                    </Card>
-                </Grid>
-            ))
-        }
-        
-        
-    </Grid>
+                ))
+            }
+        </Grid>
     </Container>
     )
 }

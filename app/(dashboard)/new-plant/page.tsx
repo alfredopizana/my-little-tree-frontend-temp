@@ -2,6 +2,7 @@
 "use client"
 import { Button, Container, Box, TextField, Stack, Card, CardMedia, styled } from "@mui/material";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { FormEvent } from "react";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -17,7 +18,25 @@ const VisuallyHiddenInput = styled('input')({
   });
 
 const NewPlant = () => {
+
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+     
+        const formData = new FormData(event.currentTarget)
+        console.log(formData)
+        // const response = await fetch('/api/submit', {
+        //   method: 'POST',
+        //   body: formData,
+        // })
+     
+        // // Handle response if necessary
+        // const data = await response.json()
+        // ...
+      }
+
     return (
+        <form onSubmit={onSubmit}>
+
         <Container maxWidth="lg">
             <Box
                 sx={{ 
@@ -141,6 +160,7 @@ const NewPlant = () => {
             </Stack>
             <Stack direction="row" spacing={2}>
                 <Button variant="contained"
+                    type="submit"
                     sx={{
                         p: 2,
                         borderRadius: 2,
@@ -304,6 +324,7 @@ const NewPlant = () => {
             </Box>
 
         </Container>
+        </form>
     )
 }
 
