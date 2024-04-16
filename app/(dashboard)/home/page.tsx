@@ -9,9 +9,9 @@ import Image from "next/image";
 import PostCard from "@/components/PostCard";
 import { auth } from "@clerk/nextjs";
 
-async function getData() {
+async function getData(userId) {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/search?userId=${userId}`)
         // The return value is *not* serialized
         // You can return Date, Map, Set, etc.
        
@@ -30,9 +30,9 @@ async function getData() {
 
 const HomePage = async ()=>{
     
-    const response = await getData();
-    const posts = response?.data?.posts;
     const { userId } = auth();
+    const response = await getData(userId);
+    const posts = response?.data?.posts;
     return (<Container maxWidth="lg"> 
   
     <Grid container spacing={2} mt={2}>
