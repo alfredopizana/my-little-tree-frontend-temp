@@ -1,4 +1,4 @@
-"use client"
+//"use client"
 import Navigation from "@/components/navigation";
 import { styled } from '@mui/material/styles';
 import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, TextField, Typography, Button, Chip, Autocomplete, Paper, Avatar } from "@mui/material";
@@ -13,7 +13,23 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import PlantCard from "@/components/PlantCard";
+import { PostAddSharp } from "@mui/icons-material";
+import { auth } from "@clerk/nextjs";
 
+async function getData(userId){
+    try{
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/plants/search?userId=${userId}`)
+
+        if (!res.ok){
+            throw new Error('Failed to fetch data')
+        }
+
+        return res.json()
+    } catch(error){
+        console.log({error})
+        throw new Error('Failed to fetch data')
+    }
+}
 // async function getData() {
 //     const res = await fetch('http://localhost:8080/plants')
 //     // The return value is *not* serialized
@@ -27,12 +43,14 @@ import PlantCard from "@/components/PlantCard";
 //     return res.json()
 // }
 
-const My_Plants = () => {
-    // const response = await getData();
-    // const plants = response.data.plants;
+const My_Plants = async ()=>{
+
+    const { userId } = auth();
+    const response = await getData(userId);
+    const plants = response?.data?.plants;
     return (
     
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //<LocalizationProvider dateAdapter={AdapterDayjs}>
     <Container maxWidth="lg">
     <Grid container spacing={2} mt={2}>
 
@@ -43,9 +61,9 @@ const My_Plants = () => {
             <b>My Calendar</b>
         </Typography>
 
-        <DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
+        {/*<DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
             <DateCalendar views={['day']} readOnly />
-        </DemoContainer>
+        </DemoContainer>*/}
         
     </Grid>
 
@@ -88,17 +106,17 @@ const My_Plants = () => {
     <Stack spacing={2} direction="column" justifyContent="flex-start" alignItems="flex-start">
         <Stack spacing={5} direction="row" justifyContent="flex-start" alignItems="center" >
     {/*1er Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
-        {/* {
-                plants && plants.map((plant, index)=>(
-                    <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
-                        <PlantCard plant={plant} />
-                    </Grid>
-                ))
-            } */}
-    </Grid>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
+        // {
+        //         plants && plants.map((plant, index)=>(
+        //             <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+        //                 <PlantCard plant={plant} />
+        //             </Grid>
+        //         ))
+        //     }
+    </Grid> */}
     {/*2o Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -132,9 +150,9 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
+    </Grid> */}
     {/*3er Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -168,9 +186,9 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
+    </Grid> */}
     {/*4to Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -207,9 +225,9 @@ const My_Plants = () => {
     </Grid>
         </Stack>
 
-        <Stack spacing={5} direction="row" justifyContent="flex-start" alignItems="center" >
+        <Stack spacing={5} direction="row" justifyContent="flex-start" alignItems="center" > */}
     {/*5to Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -243,8 +261,8 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
-    {/*6to Grid*/}
+    </Grid> */}
+    {/* 6to Grid
     <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
@@ -279,9 +297,9 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
+    </Grid> */}
     {/*7mo Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -315,9 +333,9 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
+    </Grid> */}
     {/*8vo Grid*/}
-    <Grid item xs={1} md={1} lg={2.175}>
+    {/* <Grid item xs={1} md={1} lg={2.175}>
         <Card sx={{ minWidth: 180 }}>
             <CardMedia
             component="img"
@@ -351,7 +369,7 @@ const My_Plants = () => {
                 </Typography>
             </CardActions>
         </Card>
-    </Grid>
+    </Grid> */}
         </Stack>
     </Stack>
 </Grid>
@@ -437,9 +455,17 @@ const My_Plants = () => {
 
 </Grid>
 
+{
+    plants && plants.map((plant, index)=>(
+        <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+            <PlantCard plant={plant} />
+        </Grid>
+    ))
+}
+
     </Grid>
     </Container>
-    </LocalizationProvider>
+    //</LocalizationProvider>
     )
 }
 
