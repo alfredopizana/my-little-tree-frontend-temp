@@ -17,23 +17,41 @@ import { FormEvent } from "react";
 
 const NewPlant = () => {
 
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
+    // async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    //     event.preventDefault()
      
-        const formData = new FormData(event.currentTarget)
-        console.log(formData)
-        // const response = await fetch('/api/submit', {
-        //   method: 'POST',
-        //   body: formData,
-        // })
+    //     const formData = new FormData(event.currentTarget)
+    //     console.log(formData)
+    //     // const response = await fetch('/api/submit', {
+    //     //   method: 'POST',
+    //     //   body: formData,
+    //     // })
      
-        // // Handle response if necessary
-        // const data = await response.json()
-        // ...
+    //     // // Handle response if necessary
+    //     // const data = await response.json()
+    //     // ...
+    //   }
+      async function createPlant(formData: FormData) {
+        'use server'
+     
+        const rawFormData = {
+          customerId: formData.get('nickname'),
+          amount: formData.get('amount'),
+          status: formData.get('status'),
+        }
+        console.log(rawFormData)
+        // mutate data
+        // revalidate cache
       }
 
+      async function saveFile(file: File, documentHash: string) {
+        const data = await file.arrayBuffer();
+        await fs.appendFile(`./public/${documentHash}.pdf`, Buffer.from(data));
+        
+        return;
+      }
     return (
-        <form>
+        <form action={createPlant}>
 
         <Container maxWidth="lg">
             <Box
