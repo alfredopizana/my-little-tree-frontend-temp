@@ -1,12 +1,14 @@
 "use client"
-import { Box, Button, Card, CardMedia, Container, Grid, Paper, Skeleton, styled, TextField } from "@mui/material";
-import { useFormik } from "formik";
+import { Box, Button, Card, CardMedia, Container, Grid, Paper, Skeleton, styled, TextField, Typography } from "@mui/material";
+import { ErrorMessage, useFormik } from "formik";
 import * as yup from 'yup';
 import type { NextPage } from 'next';
 import { auth } from "@clerk/nextjs";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -54,8 +56,11 @@ const AddPlant: NextPage = () => {
     useEffect(() => {
       
         console.log(file)
-      
+
+        //setPlant
     }, [file])
+
+
     type FormikSubmitHandler<V> = (value: object, actions: FormikActions<V>) => void;
     interface FormValues {
         foo: string;
@@ -71,38 +76,45 @@ const AddPlant: NextPage = () => {
     }
 
     const formik = useFormik({
-    initialValues: {
-        nickname: "",
-        plantType: "",
-        description: "",
-        wateringFrequency: "",
-        lastWatered: "",
-        fertilizerFrequency: "",
-        lastFertitlizer:"",
-    },
-    onSubmit: (values ,actions) =>{
-        
-        setStatusMessage("Creeating Plant");
-        setLoading(true)
-        console.log({values})
-        console.log({file})
-        setStatusMessage("Plant Created");
-        setLoading(false)
-    },
-    // validationSchema: yup.object({
-    //   name: yup.string().trim().required('Name is required'),
-    //   email: yup
-    //     .string()
-    //     .email('Must be a valid email')
-    //     .required('Email is required'),
-    //   message: yup.string().trim().required('Message is required'),
-    // }),
+        initialValues: {
+            nickname: "",
+            plantType: "",
+            description: "",
+            wateringFrequency: "",
+            lastWatered: null,
+            fertilizerFrequency: "",
+            lastFertitlizer:null,
+        },
+        onSubmit: (values ,actions) =>{
+            
+            setStatusMessage("Creeating Plant");
+            setLoading(true)
+            console.log({values})
+            console.log({file})
+            setStatusMessage("Plant Created");
+            setLoading(false)
+        },
+        validationSchema: yup.object({
+            nickname: yup.string().required("Field is required"),
+            plantType: yup.string().required("Field is required"),
+            description: yup.string().required("Field is required"),
+            wateringFrequency: yup.string().required("Field is required"),
+            fertilizerFrequency: yup.string().required("Field is required"),
+            lastFertitlizer: yup.date().nullable().required('Last Fertilizer is required').typeError('Invalid Format'),
+            lastWatered: yup.date().nullable().required('Last Watered is required').typeError('Invalid Format')
+        })
+
     });
     return (
         <div>
             <form onSubmit={formik.handleSubmit}>
             <Container maxWidth="lg" >
                 <Grid container spacing={2} my={4}>
+                    <Grid item xs={12}>
+                        <Typography variant="h3" component="h3">
+                            Create a Plant
+                        </Typography>
+                    </Grid>
                     <Grid item xs={12} lg={6} p={2}>
                         <Box>
                         {
@@ -134,7 +146,7 @@ const AddPlant: NextPage = () => {
                                 startIcon={<CloudUploadIcon />}
                                 
                                 >
-                                Upload file
+                                Upload a photo
                                 <VisuallyHiddenInput 
                                     type="file" 
                                     accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
@@ -189,7 +201,14 @@ const AddPlant: NextPage = () => {
                                 helperText={formik.touched.description && formik.errors.description} 
                             />
                         </Grid>
-                        
+                        <Grid item xs={12}>
+                            <Typography variant="h5" component="h3">
+                                Water
+                            </Typography>
+                            <Typography component="p">
+                                    Add a number to define the frequency. e.g. 1 (Everyday), 30 (Monthly)
+                            </Typography>
+                        </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField 
                                 id="filled-basic" 
@@ -204,23 +223,39 @@ const AddPlant: NextPage = () => {
                                 helperText={formik.touched.wateringFrequency && formik.errors.wateringFrequency} 
                             />
                         </Grid>
-                        
-
                         <Grid item xs={12} lg={6}>
-                            <TextField 
-                                id="filled-basic" 
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker 
                                 label="Last Watered" 
-                                name="lastWatered" 
-                                variant="filled"
-                                fullWidth
+                                name="lastWatered"
+                                slotProps={{ textField: { 
+                                    fullWidth: true, 
+                                    variant:"filled", 
+                                    error: formik.touched.lastWatered && Boolean(formik.errors.lastWatered),
+                                    helperText: formik.touched.lastWatered && formik.errors.lastWatered
+                                } }}
                                 value={formik.values.lastWatered}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.lastWatered && Boolean(formik.errors.lastWatered)}
-                                helperText={formik.touched.lastWatered && formik.errors.lastWatered} 
-                            />
+                                onChange={(value) => formik.setFieldValue("lastWatered", value,true)}             
+                                renderInput={(params) => (
+                                    <TextField
+                                        label="Last Watered" 
+                                        name="lastWatered"
+                                        value={formik.values.lastWatered}
+                                        {...params}
+
+                                     />
+                                     )}
+                                />
+                            </LocalizationProvider>
                         </Grid>
-                        
+                        <Grid item xs={12}>
+                            <Typography variant="h5" component="h3">
+                                Fertilizer
+                            </Typography>
+                            <Typography component="p">
+                                    Add a number to define the frequency. e.g. 1 (Everyday), 30 (Monthly)
+                            </Typography>
+                        </Grid>
                         <Grid item xs={12} lg={6}>
                             <TextField 
                                 id="filled-basic" 
@@ -237,18 +272,32 @@ const AddPlant: NextPage = () => {
                         </Grid>
                         
                         <Grid item xs={12} lg={6}>
-                            <TextField 
-                                id="filled-basic" 
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DatePicker 
                                 label="Last Fertitlizer" 
-                                name="lastFertitlizer" 
-                                variant="filled"
-                                fullWidth
+                                name="lastFertitlizer"
+                                slotProps={{ textField: { 
+                                    fullWidth: true, 
+                                    variant:"filled", 
+                                    error: formik.touched.lastFertitlizer && Boolean(formik.errors.lastFertitlizer),
+                                    helperText: formik.touched.lastFertitlizer && formik.errors.lastFertitlizer
+                                } }}
                                 value={formik.values.lastFertitlizer}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                error={formik.touched.lastFertitlizer && Boolean(formik.errors.lastFertitlizer)}
-                                helperText={formik.touched.lastFertitlizer && formik.errors.lastFertitlizer} 
-                            />
+                                onChange={(value) => formik.setFieldValue("lastFertitlizer", value,true)}             
+                                renderInput={(params) => (
+                                    <TextField
+                                        label="Last Watered" 
+                                        name="lastFertitlizer"
+                                        value={formik.values.lastFertitlizer}
+                                        {...params}
+
+                                     />
+                                     )}
+                                
+                                
+                                />
+                            </LocalizationProvider>
+
                         </Grid>
                         
                         <Grid item xs={12} lg={12}>
