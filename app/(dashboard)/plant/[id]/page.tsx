@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import { Box, Button, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, Stack, Typography} from "@mui/material"
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
@@ -8,11 +8,136 @@ import { DateCalendar } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import PostCard from "@/components/PostCard";
+import { useEffect, useState } from "react";
 
-const PlantPage = ({params}) => {
 
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+async function getPlantInfo(id: string) {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/plants/${id}`)
+    if (!res.ok) {
+      throw new Error('Failed to fetch data')
+    }
+    return res.json()
+  } catch (error) {
+    console.log({error})
+    throw new Error('Failed to fetch data')
+  }
+}
+
+async function getPostsByPlantId(id: string) {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/search?plantId=${id}`)
+    if (!res.ok) {
+      throw new Error('Failed to fetch data')
+    }
+    return res.json()
+  } catch (error) {
+    console.log({error})
+    throw new Error('Failed to fetch data')
+  }
+}
+
+async function updateLastWatered(id: string, freq: number) {
+  try {
+
+    const date = new Date()
+    const nextDate = new Date(date.getTime() + (freq*24*60*60*1000))
+
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/plants/${id}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify({
+        lastWatered : date,
+        nextWatering : nextDate
+      })
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch data')
+    }
+    return res.json()
+  } catch (error) {
+    console.log({error})
+    throw new Error('Failed to fetch data')
+  }
+}
+
+async function updateLastFertilizer(id: string, freq: number) {
+  try {
+
+    const date = new Date()
+    const nextDate = new Date(date.getTime() + (freq*24*60*60*1000))
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API}/plants/${id}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      body: JSON.stringify({
+        lastFertilizer : date,
+        nextFertilizer : nextDate
+      })
+    });
+    if (!res.ok) {
+      throw new Error('Failed to fetch data')
+    }
+    return res.json()
+  } catch (error) {
+    console.log({error})
+    throw new Error('Failed to fetch data')
+  }
+}
+
+const PlantPage = ({params}: {params: {id: string}}) => {
+
+  const[plant, setPlant] = useState(undefined);
+  const[posts, setPost] = useState(undefined);
+
+  const[waterDaysLeft, setNextWatering] = useState(undefined);
+  const[fertilizerDaysLeft, setNextFertilizer] = useState(undefined);
+
+
+  useEffect(() => {
+    getPlantInfo(params.id).then((res) => {
+      console.log(res)
+      setPlant(res?.data?.plants)
+      setNextWatering(Math.round((new Date(res?.data?.plants?.nextWatering).getTime() -  new Date().getTime()) / (1000 * 3600 * 24)));
+      setNextFertilizer(Math.round((new Date(res?.data?.plants?.nextFertilizer).getTime() -  new Date().getTime()) / (1000 * 3600 * 24)));
+    });  
+
+    
+
+    getPostsByPlantId(params.id).then((res) => {
+      console.log(res)
+      setPost(res?.data?.posts)
+    });
+  }, [])
+
+  function updateWater() {
+    updateLastWatered(params.id, plant.wateringFrequency).then((res) => {
+      console.log(res)
+      setPlant(res?.data?.plant)
+      setNextWatering(Math.round((new Date(res?.data?.plant?.nextWatering).getTime() -  new Date().getTime()) / (1000 * 3600 * 24)));
+    })
+  }
+
+  function updateFertilize() {
+    updateLastFertilizer(params.id, plant.fertilizerFrequency).then((res) => {
+      console.log(res);
+      setPlant(res?.data?.plant);
+      setNextFertilizer(Math.round((new Date(res?.data?.plant?.nextFertilizer).getTime() -  new Date().getTime()) / (1000 * 3600 * 24)));
+    })
+  }
+
+  return plant &&  (
+  <LocalizationProvider dateAdapter={AdapterDayjs}>
   <Container maxWidth="lg">  <Grid container spacing={2} mt={10}>
     <Box>
       <Grid container spacing={20}>
@@ -20,27 +145,27 @@ const PlantPage = ({params}) => {
           <div style={{borderRadius: '20px', overflow: 'hidden', width:"580px", height: "580px"}}>
             <CardMedia
               component="img"
-              image="https://picsum.photos/400/400"
+              image={plant.imageUrl}
               alt="plant image"
             />
           </div>          
           <Grid container spacing={2} alignItems="center" marginTop="10px">
             <Grid item xs={6}>
-                <Button variant="contained">Edit Plant</Button>
+                <Button variant="contained" disabled>Edit Plant</Button>
             </Grid>
             <Grid item xs={6}>
                 <Typography variant="body2" color="text.secondary">
-                  Registered: August 8, 2024
+                  Registered: {new Date(plant.createdAt).toDateString()}
                 </Typography>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h2" >
-            Plant Name {params.id}
+            {plant.nickname}
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Plant Type
+            Type: {plant.plantType}
           </Typography>
           <Grid container spacing={2} alignItems="center" marginBottom={"20px"}>
             <Grid item xs={6}>
@@ -55,12 +180,12 @@ const PlantPage = ({params}) => {
                       alignItems="flex-start"
                       spacing={2}>
                     <Typography variant="body1" display="block" gutterBottom>
-                      2 days left
+                     {waterDaysLeft} days left
                     </Typography>
                     <CircleIcon style={{color:"#304D30"}}/>
                   </Stack>
                   <Typography variant="body2" display="block" >
-                    once every 2 weeks
+                    every {plant.wateringFrequency} days
                   </Typography>
                 </Grid>
               </Grid>
@@ -77,23 +202,21 @@ const PlantPage = ({params}) => {
                     alignItems="flex-start"
                     spacing={2}>
                     <Typography variant="body1" display="block" gutterBottom>
-                      24 days left
+                      {fertilizerDaysLeft} days left
                     </Typography>
                     <CircleIcon style={{color:"#DB613A"}}/>
                   </Stack>
                   <Typography variant="body2" display="block" >
-                    once every 2 months
+                    every {plant.fertilizerFrequency} days
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
           </Grid> 
           <Typography variant="body1" align={"justify"} gutterBottom >
-            Here we will add a short description about this specific plant and 
-            any other extra comment we would like to have as part of the plant 
-            information. 
+            {plant.description}
           </Typography>
-          
+
           <DemoContainer components={['DateCalendar']} sx={{alignItems: "center"}}>
             <DateCalendar views={['day']} readOnly />
           </DemoContainer>
@@ -101,8 +224,8 @@ const PlantPage = ({params}) => {
             direction="row"
             justifyContent="space-around"
             alignItems="center">
-            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Water</Button>
-            <Button variant="contained" style={{background:"#DB613A", width: "120px"}}>Fertilize</Button> 
+            <Button variant="contained" style={{background:"#304D30", width: "120px"}} onClick={updateWater} type="button">Water</Button>
+            <Button variant="contained" style={{background:"#DB613A", width: "120px"}} onClick={updateFertilize} type="button">Fertilize</Button> 
           </Stack>          
         </Grid>
       </Grid>
@@ -113,42 +236,21 @@ const PlantPage = ({params}) => {
 
 
 
-  <Grid container spacing={2} mt={2}>
-    {
-            Array(5).fill(1).map((a)=>(
-                <Grid item xs={12} md={6} lg={3}>
-                    <Card>
-                        <CardMedia
-                        component="img"
-                        image="https://picsum.photos/400/300"
-                        alt="Paella dish"
-                    />
-                      <CardContent>
-                          <Typography variant="body2" color="text.secondary">
-                          This paragraph is just the description of the image post I did linked to this specific plant.
-                          </Typography>
-                      </CardContent>
-                        <CardActions >
-                        <IconButton aria-label="add to favorites" size="small" >
-                                <FavoriteIcon sx={{ height: 20, width: 20 }} />
-                            </IconButton>
-                            <IconButton aria-label="share" size="small" >
-                                <ShareIcon sx={{ height: 20, width: 20 }}/>
-                            </IconButton>
-                            <IconButton aria-label="edit" size="small" >
-                                <EditIcon sx={{ height: 20, width: 20 }} />
-                            </IconButton>
-                        </CardActions>
-                    </Card>
-                </Grid>
-            ))
-        }
-        
-        
+    <Grid container spacing={2} mt={2}>
+      {
+        posts && posts.map((post, index)=>(
+          <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+            <PostCard post={post} />
+          </Grid>
+        ))
+      }
+          
+          
     </Grid>
     </Container>
     </LocalizationProvider>
     )
+  
 }
 
 export default PlantPage;
