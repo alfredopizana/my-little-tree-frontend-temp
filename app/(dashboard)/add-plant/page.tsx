@@ -1,5 +1,5 @@
 "use client"
-import { Box, Button, Card, CardMedia, Container, Grid, Paper, Skeleton, styled, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardMedia, Container, Grid, Paper, Skeleton, styled, TextField, Typography } from "@mui/material";
 import { ErrorMessage, useFormik } from "formik";
 import * as yup from 'yup';
 import type { NextPage } from 'next';
@@ -9,6 +9,19 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { getSignedURL, createPlant } from "./actions";
+import dayjs from "dayjs";
+
+export declare type PlantForm = {
+    nickname: String,
+    plantType: String,
+    description: String,
+    wateringFrequency: Number,
+    lastWatered: Date | null,
+    fertilizerFrequency: Number,
+    lastFertilizer: Date | null,
+    userId?: String
+}
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -22,21 +35,10 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
   });
 
-// const validationSchema = yup.object({
-//     email: yup
-//       .string('Enter your email')
-//       .email('Enter a valid email')
-//       .required('Email is required'),
-//     password: yup
-//       .string('Enter your password')
-//       .min(8, 'Password should be of minimum 8 characters length')
-//       .required('Password is required'),
-//   });
-
 
 
 const AddPlant: NextPage = () => {
-    
+
     const [file, setFile] = useState<File | undefined>(undefined);
     const [fileURL, setFileURL] = useState<string | undefined>(undefined);
 
@@ -61,36 +63,108 @@ const AddPlant: NextPage = () => {
     }, [file])
 
 
-    type FormikSubmitHandler<V> = (value: object, actions: FormikActions<V>) => void;
-    interface FormValues {
-        foo: string;
-        bar: number
-      }
-    const handleFormSubmit: FormikSubmitHandler<FormValues> = (values ,actions) =>{
-        
-        setStatusMessage("Creeating Plant");
-        setLoading(true)
-        console.log({values})
-        setStatusMessage("Plant Created");
-        setLoading(false)
-    }
+    
+    const computeSHA256 = async (file: File) => {
+        const buffer = await file.arrayBuffer();
+        const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+        return hashHex;
+    };
 
-    const formik = useFormik({
+    
+
+    const formik = useFormik<PlantForm>({
         initialValues: {
             nickname: "",
             plantType: "",
             description: "",
-            wateringFrequency: "",
+            wateringFrequency: 1,
             lastWatered: null,
-            fertilizerFrequency: "",
-            lastFertitlizer:null,
+            fertilizerFrequency: 1,
+            lastFertilizer:null,
         },
-        onSubmit: (values ,actions) =>{
+        onSubmit: async (values ,actions) =>{
             
-            setStatusMessage("Creeating Plant");
+            setStatusMessage("Creating Plant");
             setLoading(true)
-            console.log({values})
-            console.log({file})
+            try {
+                if(file){
+                    setStatusMessage("Uploading Photo");
+                    console.log({values})
+                    console.log({file})
+                    const checksum = await computeSHA256(file)
+                    const signedURLResult = await getSignedURL(file.type,file.size,checksum);
+                    if(signedURLResult.failure !== undefined){
+                        setStatusMessage("Something went wrong")
+                        setLoading(false)
+                        throw( new Error(signedURLResult.failure));
+                    }
+                    console.log({signedURLResult})
+                    const url = signedURLResult.success.url
+                    console.log("test",{url})
+                    await fetch(url,{
+                        method:"PUT",
+                        body:file,
+                        headers:{
+                            "Content-Type": file?.type
+                        }
+                    })
+                    console.log({values})
+                    
+                    let newPlant: any =  {...values, 
+                        dismissedWatering: false,
+                        dismissedFertilizer:false,
+                        imageUrl: url.split("?")[0]
+                    }
+                    
+
+                    // Function to Add days to current date
+                    function addDays(date, days) {
+                        const newDate = new Date(date);
+                        console.log(newDate)
+                        newDate.setDate(date.getDate() + days);
+                        return newDate;
+                    }
+                    
+                    
+
+                    if(newPlant.lastWatered){
+                        newPlant = {...newPlant, 
+                            nextWatering: dayjs(newPlant.lastWatered).add( Number(newPlant.wateringFrequency))
+                        }
+                    }
+                       
+                    if(newPlant.lastFertilizer){
+
+                        
+                        newPlant =  {...newPlant, 
+                            nextFertilizer: dayjs(newPlant.lastFertilizer).add(Number(newPlant.fertilizerFrequency))
+                        }
+                    }
+                    
+                    console.log("neew",{newPlant})
+                    newPlant =  {...newPlant, 
+                            lastWatered: dayjs(newPlant.lastWatered).toString(),
+                            lastFertilizer: dayjs(newPlant.lastFertilizer).toString(),
+                            nextWatering: newPlant.nextWatering.toString(),
+                            nextFertilizer: newPlant.nextFertilizer.toString()
+                    }
+                    
+                    console.log({newPlant})
+                    const plantCreated = await createPlant(newPlant)
+                    console.log(plantCreated)
+                }
+            } catch (error) {
+                console.log({error})
+                setStatusMessage("Something went wrong");
+                setLoading(false)
+                return
+            }
+            
+           
             setStatusMessage("Plant Created");
             setLoading(false)
         },
@@ -98,9 +172,9 @@ const AddPlant: NextPage = () => {
             nickname: yup.string().required("Field is required"),
             plantType: yup.string().required("Field is required"),
             description: yup.string().required("Field is required"),
-            wateringFrequency: yup.string().required("Field is required"),
-            fertilizerFrequency: yup.string().required("Field is required"),
-            lastFertitlizer: yup.date().nullable().required('Last Fertilizer is required').typeError('Invalid Format'),
+            wateringFrequency: yup.number().required("Field is required"),
+            fertilizerFrequency: yup.number().required("Field is required"),
+            lastFertilizer: yup.date().nullable().required('Last Fertilizer is required').typeError('Invalid Format'),
             lastWatered: yup.date().nullable().required('Last Watered is required').typeError('Invalid Format')
         })
 
@@ -114,6 +188,7 @@ const AddPlant: NextPage = () => {
                         <Typography variant="h3" component="h3">
                             Create a Plant
                         </Typography>
+                        {loading && <Alert severity="warning">{statusMessage}</Alert>}
                     </Grid>
                     <Grid item xs={12} lg={6} p={2}>
                         <Box>
@@ -275,20 +350,20 @@ const AddPlant: NextPage = () => {
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <DatePicker 
                                 label="Last Fertitlizer" 
-                                name="lastFertitlizer"
+                                name="lastFertilizer"
                                 slotProps={{ textField: { 
                                     fullWidth: true, 
                                     variant:"filled", 
-                                    error: formik.touched.lastFertitlizer && Boolean(formik.errors.lastFertitlizer),
-                                    helperText: formik.touched.lastFertitlizer && formik.errors.lastFertitlizer
+                                    error: formik.touched.lastFertilizer && Boolean(formik.errors.lastFertilizer),
+                                    helperText: formik.touched.lastFertilizer && formik.errors.lastFertilizer
                                 } }}
-                                value={formik.values.lastFertitlizer}
-                                onChange={(value) => formik.setFieldValue("lastFertitlizer", value,true)}             
+                                value={formik.values.lastFertilizer}
+                                onChange={(value) => formik.setFieldValue("lastFertilizer", value,true)}             
                                 renderInput={(params) => (
                                     <TextField
                                         label="Last Watered" 
-                                        name="lastFertitlizer"
-                                        value={formik.values.lastFertitlizer}
+                                        name="lastFertilizer"
+                                        value={formik.values.lastFertilizer}
                                         {...params}
 
                                      />
