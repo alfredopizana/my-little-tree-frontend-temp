@@ -1,4 +1,4 @@
-//"use client"
+// "use client"
 import Navigation from "@/components/navigation";
 import { styled } from '@mui/material/styles';
 import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, TextField, Typography, Button, Chip, Autocomplete, Paper, Avatar } from "@mui/material";
@@ -38,7 +38,7 @@ const My_Plants = async ()=>{
     const plants = response?.data?.plants;
     return (
     
-    //<LocalizationProvider dateAdapter={AdapterDayjs}>
+    // <LocalizationProvider dateAdapter={AdapterDayjs}>
     <Container maxWidth="lg">
     <Grid container spacing={2} mt={2}>
 
@@ -49,9 +49,9 @@ const My_Plants = async ()=>{
             <b>My Calendar</b>
         </Typography>
 
-        {/*<DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
+        {/* <DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
             <DateCalendar views={['day']} readOnly />
-        </DemoContainer>*/}
+        </DemoContainer> */}
         
     </Grid>
 
@@ -188,7 +188,7 @@ const My_Plants = async ()=>{
 
     </Grid>
     </Container>
-    //</LocalizationProvider>
+    // </LocalizationProvider>
     )
 }
 
