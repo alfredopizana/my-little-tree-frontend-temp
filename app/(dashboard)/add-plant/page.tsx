@@ -93,8 +93,6 @@ const AddPlant: NextPage = () => {
             try {
                 if(file){
                     setStatusMessage("Uploading Photo");
-                    console.log({values})
-                    console.log({file})
                     const checksum = await computeSHA256(file)
                     const signedURLResult = await getSignedURL(file.type,file.size,checksum);
                     if(signedURLResult.failure !== undefined){
@@ -102,9 +100,7 @@ const AddPlant: NextPage = () => {
                         setLoading(false)
                         throw( new Error(signedURLResult.failure));
                     }
-                    console.log({signedURLResult})
                     const url = signedURLResult.success.url
-                    console.log("test",{url})
                     await fetch(url,{
                         method:"PUT",
                         body:file,
@@ -112,7 +108,6 @@ const AddPlant: NextPage = () => {
                             "Content-Type": file?.type
                         }
                     })
-                    console.log({values})
                     
                     let newPlant: any =  {...values, 
                         dismissedWatering: false,
@@ -121,15 +116,6 @@ const AddPlant: NextPage = () => {
                     }
                     
 
-                    // Function to Add days to current date
-                    function addDays(date, days) {
-                        const newDate = new Date(date);
-                        console.log(newDate)
-                        newDate.setDate(date.getDate() + days);
-                        return newDate;
-                    }
-                    
-                    
 
                     if(newPlant.lastWatered){
                         newPlant = {...newPlant, 
@@ -139,13 +125,11 @@ const AddPlant: NextPage = () => {
                        
                     if(newPlant.lastFertilizer){
 
-                        
                         newPlant =  {...newPlant, 
                             nextFertilizer: dayjs(newPlant.lastFertilizer).add(Number(newPlant.fertilizerFrequency))
                         }
                     }
                     
-                    console.log("neew",{newPlant})
                     newPlant =  {...newPlant, 
                             lastWatered: dayjs(newPlant.lastWatered).toString(),
                             lastFertilizer: dayjs(newPlant.lastFertilizer).toString(),
@@ -153,7 +137,6 @@ const AddPlant: NextPage = () => {
                             nextFertilizer: newPlant.nextFertilizer.toString()
                     }
                     
-                    console.log({newPlant})
                     const plantCreated = await createPlant(newPlant)
                     console.log(plantCreated)
                 }

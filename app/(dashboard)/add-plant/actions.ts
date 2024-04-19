@@ -106,7 +106,6 @@ export const createPlant = async (plant: Plant) =>{
         
     } catch (error) {
         console.log({error})
-        console.log("Error Message",error.message)
         throw new Error('Failed to fetch data')
     }
 }
