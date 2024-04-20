@@ -15,6 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
+import { SignedIn  } from "@clerk/nextjs";
 
 
 const pages = [
@@ -107,7 +108,7 @@ const Navigation = () => {
             >
               {pages.map(({route,displayName}) => (
                 <Link key={displayName} href={route}>
-                  <Typography textAlign="center" sx={{mx:2}}>{displayName}</Typography>
+                  <Typography textAlign="center" sx={{mx:2, border: 'none'}}>{displayName}</Typography>
                 </Link>
               ))}
             </Menu>
@@ -116,11 +117,25 @@ const Navigation = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
            
             {pages.map(({route,displayName}) => (
-                <Link key={displayName} href={route}>
-                  <Typography textAlign="center" sx={{mx:1}}>{displayName}</Typography>
+                <Link key={displayName} href={route} style={{ textDecoration: 'none' }} >
+                  <Typography  textAlign="center" color="text.primary" mx={1}>{displayName}</Typography>
                 </Link>
               ))}
           </Box>
+          <SignedIn>
+          <Box sx={{ flexGrow: 0 }}>
+           <Button variant="contained" 
+              sx={{mr:4, 
+                  backgroundColor:'#304D30',
+                  ':hover': {
+                    bgcolor: '#304D30', 
+                    opacity: '.8',
+                    color: 'white',
+                  },}}>
+                    New Post
+            </Button>
+          </Box>
+          </SignedIn>
           <Box sx={{ flexGrow: 0 }}>
             <UserButton />
           </Box>
