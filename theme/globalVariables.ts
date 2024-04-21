@@ -144,7 +144,7 @@ const top100Films = [
  export { top100Films };
 
 
- const VisuallyHiddenInput = styled('input')({
+ {/*const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
   clipPath: 'inset(50%)',
   height: 1,
@@ -156,4 +156,4 @@ const top100Films = [
   width: 1,
 });
 
-export { VisuallyHiddenInput };
+export { VisuallyHiddenInput };*/}

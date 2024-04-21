@@ -1,4 +1,4 @@
-'use client';
+//'use client';
 import Navigation from "@/components/navigation";
 import { styled } from '@mui/material/styles';
 import { Box, Card, CardActions, CardContent, CardMedia, Container, Grid, IconButton, TextField, Typography, Button, Chip, Autocomplete } from "@mui/material";
@@ -9,10 +9,29 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { top100Films } from '@/theme/globalVariables'
-import { VisuallyHiddenInput } from '@/theme/globalVariables'
+//import { VisuallyHiddenInput } from '@/theme/globalVariables'
+import PostCard from "@/components/PostCard";
+import { auth } from "@clerk/nextjs";
+import { FormEvent } from "react";
+
 
 const NewPublish = ()=>{
+
+    async function createPublish(formData: FormData) {
+        'use server'
+
+    const rawFormData = {
+        description: formData.get('description'),
+        tags: formData.get('tags'),
+      }
+      console.log(rawFormData)
+      // mutate data
+      // revalidate cache
+    }
+           
+
     return (
+        <form action={createPublish}>
         <Container maxWidth="xs">
         <Grid container spacing={2} mt={2}>
 
@@ -33,7 +52,7 @@ const NewPublish = ()=>{
         </Grid>
 {/*Codigo del Boton para subir archivos*/}
         <Grid container direction="row" alignItems="center" justifyContent="center" marginTop="3px">
-        <Button
+       {/* <Button
             style={{background:"#DB613A"}}
             component="label"
             role={undefined}
@@ -43,22 +62,22 @@ const NewPublish = ()=>{
         >
         Upload file
         <VisuallyHiddenInput type="file" />
-        </Button>
+        </Button>*/}
         </Grid>
 
         <Box
-            component="form"
-            sx={{
-                '& .MuiTextField-root': { m: 3, width: '43ch' },
-                }}
-            noValidate
-            autoComplete="off"
+            //component="form"
+            //sx={{
+              //  '& .MuiTextField-root': { m: 3, width: '43ch' },
+               // }}
+            //noValidate
+            //autoComplete="off"
         >
             <div>
                 <TextField
                 id="outlined-multiline-static"
                 label="Description"
-                InputProps={{ style: { background:"#EEF0E5", border:"#EEF0E5"} }}
+                //InputProps={{ style: { background:"#EEF0E5", border:"#EEF0E5"} }}
                 multiline
                 rows={4}
                 defaultValue="Please enter a description for your post"
@@ -74,7 +93,7 @@ const NewPublish = ()=>{
             id="tags-outlined"
             options={top100Films}
             getOptionLabel={(option) => option.title}
-            style={{ background:"#EEF0E5", border:"#EEF0E5" }}
+            //style={{ background:"#EEF0E5", border:"#EEF0E5" }}
             filterSelectedOptions
             renderInput={(params) => (
             <TextField
@@ -94,13 +113,21 @@ const NewPublish = ()=>{
             direction="row"
             justifyContent="flex-end"
             alignItems="center">
-            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Cancel</Button>
-            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Publish</Button>
+            <Button variant="contained" 
+                //style={{background:"#304D30", width: "120px"}}>
+                >
+                Cancel</Button>
+            <Button variant="contained" 
+                type="submit"
+                //style={{background:"#304D30", width: "120px"}}>
+                >
+                Publish</Button>
         </Stack>
         </Grid>
 
         </Grid>
         </Container>
+        </form>
     )
 
 
