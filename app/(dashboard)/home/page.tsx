@@ -9,9 +9,14 @@ import Image from "next/image";
 import PostCard from "@/components/PostCard";
 import { auth } from "@clerk/nextjs";
 
-async function getData(userId) {
+async function getData(userId,token) {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/search?userId=${userId}`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts/search?userId=${userId}`,{
+          headers:{
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          }
+        })
         // The return value is *not* serialized
         // You can return Date, Map, Set, etc.
        
@@ -30,8 +35,9 @@ async function getData(userId) {
 
 const HomePage = async ()=>{
     
-    const { userId } = auth();
-    const response = await getData(userId);
+    const { userId,getToken } = auth();
+    const token = await getToken()
+    const response = await getData(userId,token);
     const posts = response?.data?.posts;
     return (<Container maxWidth="lg"> 
   
