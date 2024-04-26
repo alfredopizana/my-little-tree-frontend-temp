@@ -45,6 +45,8 @@ const AddPlant: NextPage = () => {
     const [statusMessage, setStatusMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const [bestMatchPlantType,setBestMatchPlantType] = useState<string | undefined>("");
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         const file = e.target.files?.[0]
         setFile(file);
@@ -54,6 +56,36 @@ const AddPlant: NextPage = () => {
         }else{
             setFileURL(undefined)
         }
+    }
+    const handlePlantRecognition = async (e)=>{
+        const myPlantNetToken = process.env.NEXT_PUBLIC_MY_PLANT_NET_API_TOKEN || "";
+        const url = (process.env.NEXT_PUBLIC_MY_PLANT_NET_API_BASE_URL || "") 
+            + (process.env.NEXT_PUBLIC_MY_PLANT_NET_API_IDENTIFY || "")
+            + "?api-key=" +myPlantNetToken;
+        console.log({url,myPlantNetToken})
+        const formData = new FormData();
+        // formData.append("include-related-images","false")
+        // formData.append("no-reject","false")
+        // formData.append("lang","es")
+        // formData.append("type","kt")
+        // formData.append("api-key",myPlantNetToken)
+        formData.append("images",file)
+         
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                "Accept": "application/json"
+            }
+        }).then(response=>response.json())
+        .then(data=>{ console.log(data);
+            if(data?.bestMatch)
+                setBestMatchPlantType(data?.bestMatch)
+            formik.setFieldValue('plantType',data?.bestMatch);
+         })
+        // const json = await response.json()
+        // const data = response?.body
+        // console.log({response,data,json: json?.data})
     }
     useEffect(() => {
       
@@ -210,9 +242,22 @@ const AddPlant: NextPage = () => {
                                     accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm"
                                     onChange={handleFileChange}
                                     />
+                            
                             </Button>
+
+                            {
+                                file && (
+                                <Button sx={{ml:3}} variant="contained" onClick={handlePlantRecognition}>
+                                    Identify Plant
+                                </Button>)
+                            }
                         </Box>
-                        
+                            {
+                                bestMatchPlantType != "" && ( <Box>
+                                    <p style={{color: "green"}}>🌾🌺 We tried to identify the plant type using <strong>AI</strong>, the best match is 🪴 <strong>{bestMatchPlantType} 🪴 </strong></p>
+                                </Box>)
+                            }
+                           
                     </Grid>
                     <Grid container item xs={12} lg={6} spacing={2}>
                         <Grid item xs={12}lg={6}>

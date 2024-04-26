@@ -9,10 +9,68 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { top100Films } from '@/theme/globalVariables'
-import { VisuallyHiddenInput } from '@/theme/globalVariables'
+//import { VisuallyHiddenInput } from '@/theme/globalVariables'
+import PostCard from "@/components/PostCard";
+import { auth } from "@clerk/nextjs";
+import { FormEvent } from "react";
+import { ErrorMessage, useFormik } from "formik";
+import * as yup from 'yup';
+import type { NextPage } from 'next';
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { getSignedURL, createPlant } from "./actions";
 
-const NewPublish = ()=>{
+export declare type PostForm = {
+    description: String,
+    tags: Array<String>,
+    userId?: String
+}
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
+
+const NewPublish: NextPage = () => {
+
+    const [statusMessage, setStatusMessage] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    //AQUI VAN LAS COSAS DEL FILE Y TODO ESO, TOMANDO COMO BASE LA PAGINA "ADD PAGE", PERO LO OMITIRE POR EL MOMENTO
+
+    const formik = useFormik<PostForm>({
+        initialValues: {
+            description: "",
+            tags: [],
+        },
+        onSubmit: async (values ,actions) =>{
+            
+            setStatusMessage("Creating Post");
+            setLoading(true)
+
+            //AQUI IRIA EL TRY CATCH PARA LAS COSAS DE LA IMAGEN Y DE LOS WATERED Y FERTILIZED, LO MOMITO POR QUE NO APLICA AQUI
+
+            setStatusMessage("Post Created");
+            setLoading(false)
+        },
+
+        validationSchema: yup.object({
+            description: yup.string().required("Field is required"),
+            tags: yup.array().required("Field is required")
+        })
+    });
+            
+
     return (
+        <div>
+        <form onSubmit={formik.handleSubmit}>
         <Container maxWidth="xs">
         <Grid container spacing={2} mt={2}>
 
@@ -46,29 +104,28 @@ const NewPublish = ()=>{
         </Button>
         </Grid>
 
-        <Box
-            component="form"
-            sx={{
-                '& .MuiTextField-root': { m: 3, width: '43ch' },
-                }}
-            noValidate
-            autoComplete="off"
-        >
+        <Grid item xs={6}lg={12} spacing={2}>
             <div>
                 <TextField
-                id="outlined-multiline-static"
-                label="Description"
-                InputProps={{ style: { background:"#EEF0E5", border:"#EEF0E5"} }}
-                multiline
-                rows={4}
-                defaultValue="Please enter a description for your post"
+                    style={{ background:"#EEF0E5", border:"#EEF0E5" }}
+                    id="filled-basic" 
+                    label="Description" 
+                    name="description" 
+                    variant="filled"
+                    fullWidth
+                    multiline
+                    rows={4}
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.description && Boolean(formik.errors.description)}
+                    helperText={formik.touched.description && formik.errors.description}
                 />
             </div>
-        </Box>
+        </Grid>
 
 {/*Codigo del cuadro de hashtags*/}
-        <Container maxWidth="xs">
-        <Stack sx={{ width: 383 }}>
+        <Grid item xs={6}lg={12} mt={2}>
         <Autocomplete
             multiple
             id="tags-outlined"
@@ -79,13 +136,21 @@ const NewPublish = ()=>{
             renderInput={(params) => (
             <TextField
                 {...params}
-                label="Tags"
+                id="filled-basic" 
+                label="Tags" 
+                name="Tags" 
+                variant="filled" 
+                fullWidth
+                value={formik.values.tags}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={formik.touched.tags && Boolean(formik.errors.tags)}
+                helperText={formik.touched.tags && formik.errors.tags}
                 placeholder="Add Tag"
             />
             )}
         />
-        </Stack>
-        </Container>
+        </Grid>
 
 {/*Codigo de los botones cancel y publish*/}
         <Grid container direction="row" alignItems="center" justifyContent="flex-end" marginTop="40px">
@@ -94,16 +159,26 @@ const NewPublish = ()=>{
             direction="row"
             justifyContent="flex-end"
             alignItems="center">
-            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Cancel</Button>
-            <Button variant="contained" style={{background:"#304D30", width: "120px"}}>Publish</Button>
+            <Button
+                variant="contained"
+                fullWidth 
+                >
+                Cancel</Button>
+
+            <Button
+                variant="contained" 
+                fullWidth 
+                type="submit"
+                >
+                Publish</Button>
         </Stack>
         </Grid>
 
         </Grid>
         </Container>
-    )
-
-
+        </form>
+    </div>
+    );
 }
 
 export default NewPublish;
