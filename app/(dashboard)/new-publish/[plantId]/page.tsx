@@ -41,7 +41,7 @@ const VisuallyHiddenInput = styled('input')({
 
 const NewPublish: NextPage = ({}) => {
     
-  const router = useRouter()
+    const router = useRouter()
  
     const [file, setFile] = useState<File | undefined>(undefined);
     const [fileURL, setFileURL] = useState<string | undefined>(undefined);

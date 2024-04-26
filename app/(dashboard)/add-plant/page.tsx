@@ -11,6 +11,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { getSignedURL, createPlant } from "./actions";
 import dayjs from "dayjs";
+import { useRouter } from 'next/navigation'
 
 export declare type PlantForm = {
     nickname: String,
@@ -39,6 +40,7 @@ const VisuallyHiddenInput = styled('input')({
 
 const AddPlant: NextPage = () => {
 
+    const router = useRouter()
     const [file, setFile] = useState<File | undefined>(undefined);
     const [fileURL, setFileURL] = useState<string | undefined>(undefined);
 
@@ -171,6 +173,7 @@ const AddPlant: NextPage = () => {
                     
                     const plantCreated = await createPlant(newPlant)
                     console.log(plantCreated)
+                    router.push(`/my-plants`)
                 }
             } catch (error) {
                 console.log({error})

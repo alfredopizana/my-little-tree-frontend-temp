@@ -8,38 +8,44 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { Dayjs } from "dayjs";
 import { useState } from "react";
 type Props = {
-    days: Array<string>
+    days: Array<string>,
+    fDays:Array<string>
 }
 
-function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
-    const { highlightedDays = [], day, outsideCurrentMonth, ...other } = props;
-
-        const isSelected = highlightedDays.includes(day.format("YYYY-MM-DD"))
+function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[],fertilizerDays?: string[] }) {
+    const { highlightedDays = [],fertilizerDays = [],day, outsideCurrentMonth, ...other } = props;
+        let badge = undefined
+        if (highlightedDays.includes(day.format("YYYY-MM-DD")))
+          badge= '💧'
+        if (fertilizerDays.includes(day.format("YYYY-MM-DD")))
+          badge= '🌱'
 
     return (
         <Badge
         key={props.day.toString()}
         overlap="circular"
-        badgeContent={isSelected ? '💧' : undefined}
+        badgeContent={badge}
         >
         <PickersDay {...other} outsideCurrentMonth={outsideCurrentMonth} day={day} />
         </Badge>
     );
 }
-export const Calendar = ({days,}:Props) =>{
+export const Calendar = ({days=[],fDays=[]}:Props) =>{
     
       const [highlightedDays, setHighlitedDays] = useState(days);
-    
+      const [fertilizerDays, setFertilizerDays] = useState(fDays);
 
     return <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
             <DateCalendar 
+            showDaysOutsideCurrentMonth
             slots={{
                 day: ServerDay,
               }}
             slotProps={{
               day: {
                 highlightedDays,
+                fertilizerDays
               },
             }} 
             />

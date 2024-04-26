@@ -37,11 +37,11 @@ const PostCard = ({post}:Props)=> {
                 </Typography>
                 <Typography variant="body2" color="text.secondary"> 3 days ago </Typography>
                 </CardContent>
-            <CardActions disableSpacing>                        
+            {/* <CardActions disableSpacing>                        
                 <IconButton aria-label="share">
                     <ShareIcon />
                 </IconButton>
-            </CardActions>
+            </CardActions> */}
         </Card>
 }
 

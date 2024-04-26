@@ -8,6 +8,7 @@ import PlantIcon from "@/public/iconPlant.svg";
 import Image from "next/image";
 import PostCard from "@/components/PostCard";
 import { auth } from "@clerk/nextjs";
+import dayjs from "dayjs";
 
 async function getData(userId,token) {
     try {
@@ -44,7 +45,7 @@ const HomePage = async ()=>{
     <Grid container spacing={2} mt={2}>
         <Grid item xs={12}>
         <Box mb={5}>
-     <form>
+     {/* <form>
             <TextField
             id="search-bar"
             className="text"
@@ -67,11 +68,14 @@ const HomePage = async ()=>{
               }}
             />             
             
-        </form>  
+        </form>   */}
     </Box>
         </Grid>
             {
-                posts && posts.map((post, index)=>(
+                posts && posts.sort((a,b)=>{ 
+                  const first = dayjs(a.createdAt);
+                  const second = dayjs(b.createdAt);
+                  return first.isAfter(second)? -1:1}).map((post, index)=>(
                     <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
                         <PostCard post={post} />
                     </Grid>

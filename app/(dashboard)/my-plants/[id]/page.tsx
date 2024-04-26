@@ -236,7 +236,7 @@ const PlantPage = ({params}: {params: {id: string}}) => {
           <Typography variant="body1" align={"justify"} gutterBottom >
             {plant.description}
           </Typography>
-          <Calendar days={[formatDate(plant.nextWatering)]}></Calendar>
+          <Calendar days={[formatDate(plant.nextWatering)]} fDays={[formatDate(plant.nextFertilizer)]}></Calendar>
           <Stack 
             direction="row"
             justifyContent="space-around"
@@ -255,7 +255,10 @@ const PlantPage = ({params}: {params: {id: string}}) => {
 
     <Grid container spacing={2} mt={2}>
       {
-        posts && posts.map((post, index)=>(
+        posts && posts.sort((a,b)=>{ 
+          const first = dayjs(a.createdAt);
+          const second = dayjs(b.createdAt);
+          return first.isAfter(second)? -1:1}).map((post, index)=>(
           <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
             <PostCard post={post} />
           </Grid>

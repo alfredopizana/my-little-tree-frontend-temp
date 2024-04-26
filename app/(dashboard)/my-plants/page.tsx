@@ -60,7 +60,7 @@ const My_Plants = async ()=>{
             <Typography variant="h5" gutterBottom>
                 <b>My Calendar</b>
             </Typography>
-            <Calendar days={[...wateringDates]}></Calendar>
+            <Calendar days={wateringDates} fDays={fertilizerDates}></Calendar>
         </Grid>
 
 {/*Codigo del cuadro de editar perfil*/}
@@ -101,7 +101,10 @@ const My_Plants = async ()=>{
         <Grid container spacing={2}>
 
             {
-                plants && plants.map((plant, index)=>(
+                plants && plants.sort((a,b)=>{ 
+                    const first = dayjs(a.createdAt);
+                    const second = dayjs(b.createdAt);
+                    return first.isAfter(second)? -1:1}).map((plant, index)=>(
                     <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
                         <PlantCard plant={plant} />
                     </Grid>
