@@ -77,18 +77,18 @@ export async function getSignedURL(type:string, size: number, checksum: string){
 }
 
 
-export const createPlant = async (plant: Plant) =>{
+export const createPost = async (post: Plant) =>{
     try {
         const session = auth();
         if(!session){
             return {failure: "Unauthorized"}
         }
-        const newPlant = {...plant,userId: session.userId};
-        console.log("createPlant Called")
-        console.log({newPlant});
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/plants`,{
+        const newPost = {...post,userId: session.userId};
+        console.log("createPost Called")
+        console.log({newPost});
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/posts`,{
             method:"POST",
-            body: JSON.stringify(newPlant),
+            body: JSON.stringify(newPost),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -106,6 +106,7 @@ export const createPlant = async (plant: Plant) =>{
         
     } catch (error) {
         console.log({error})
+        console.log(error.message)
         throw new Error('Failed to fetch data')
     }
 }

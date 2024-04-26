@@ -69,7 +69,6 @@ const HomePage = async ()=>{
             
         </form>  
     </Box>
-              {userId}
         </Grid>
             {
                 posts && posts.map((post, index)=>(

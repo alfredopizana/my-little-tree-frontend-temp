@@ -124,15 +124,17 @@ const Navigation = () => {
           </Box>
           <SignedIn>
           <Box sx={{ flexGrow: 0 }}>
-           <Button variant="contained" 
-              sx={{mr:4, 
+           
+            <Button variant='contained'
+                href="/add-plant"
+                  sx={{mr:4, 
                   backgroundColor:'#304D30',
                   ':hover': {
                     bgcolor: '#304D30', 
                     opacity: '.8',
                     color: 'white',
                   },}}>
-                    New Post
+                    New Plant
             </Button>
           </Box>
           </SignedIn>

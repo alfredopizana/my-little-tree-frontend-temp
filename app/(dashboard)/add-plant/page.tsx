@@ -409,7 +409,7 @@ const AddPlant: NextPage = () => {
                             variant="contained" 
                             fullWidth 
                             type="submit">
-                            Submits
+                            Submit
                         </Button>
                         </Grid>
                         

@@ -9,12 +9,12 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { DateCalendar } from "@mui/x-date-pickers";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import PlantCard from "@/components/PlantCard";
 import { PostAddSharp } from "@mui/icons-material";
 import { auth } from "@clerk/nextjs";
+import { Calendar } from "@/components/Calendar";
+import dayjs from "dayjs";
 
 async function getData(userId){
     try{
@@ -36,24 +36,32 @@ const My_Plants = async ()=>{
     const { userId } = auth();
     const response = await getData(userId);
     const plants = response?.data?.plants;
+    const wateringDates = plants.map((plant)=>{
+        if(dayjs(plant.nextWatering).isValid())
+            return dayjs(plant.nextWatering).format("YYYY-MM-DD")
+        return dayjs().format("YYYY-MM-DD")
+    })
+    const fertilizerDates = plants.map((plant)=>{
+        if(dayjs(plant.nextFertilizer).isValid())
+            return dayjs(plant.nextFertilizer).format("YYYY-MM-DD")
+        return dayjs().format("YYYY-MM-DD")
+    })
+///const today = dayjs().format("YYYY-MM-DD");
+    console.log({wateringDates,fertilizerDates})
     return (
     
-    // <LocalizationProvider dateAdapter={AdapterDayjs}>
+    // 
     <Container maxWidth="lg">
     <Grid container spacing={2} mt={2}>
 
-{/*Codigo del calendario*/}
-    <Grid item xs={8} md={6} lg={8.7}>
+        {/*Codigo del calendario*/}
+        <Grid item xs={8} md={6} lg={8.7}>
 
-        <Typography variant="h5" gutterBottom>
-            <b>My Calendar</b>
-        </Typography>
-
-        {/* <DemoContainer components={['DateCalendar']} sx={{alignItems: "left"}}>
-            <DateCalendar views={['day']} readOnly />
-        </DemoContainer> */}
-        
-    </Grid>
+            <Typography variant="h5" gutterBottom>
+                <b>My Calendar</b>
+            </Typography>
+            <Calendar days={[...wateringDates]}></Calendar>
+        </Grid>
 
 {/*Codigo del cuadro de editar perfil*/}
     <Grid item xs={2} md={6} lg={3.3}>
@@ -86,15 +94,20 @@ const My_Plants = async ()=>{
     </Grid>
 
 {/*Codigo de las tarjetas de plantas, 8 grids*/}
-<Grid item xs={8} md={6} lg={8.7}>
+<Grid  item xs={8} md={6} lg={8.7}>
     <Typography variant="h5" gutterBottom>
         <b>My Plants</b>
     </Typography>
+        <Grid container spacing={2}>
 
-    <Stack spacing={2} direction="column" justifyContent="flex-start" alignItems="flex-start">
-        <Stack spacing={5} direction="row" justifyContent="flex-start" alignItems="center" >
-        </Stack>
-    </Stack>
+            {
+                plants && plants.map((plant, index)=>(
+                    <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
+                        <PlantCard plant={plant} />
+                    </Grid>
+                ))
+            }
+        </Grid>
 </Grid>
 
 {/*Codigo del cuadro de stats and record, last watered plant y reminder need sun*/}
@@ -178,17 +191,11 @@ const My_Plants = async ()=>{
 
 </Grid>
 
-{
-    plants && plants.map((plant, index)=>(
-        <Grid item xs={12} md={6} lg={4} key={"card"+ index}>
-            <PlantCard plant={plant} />
-        </Grid>
-    ))
-}
+
 
     </Grid>
     </Container>
-    // </LocalizationProvider>
+    // 
     )
 }
 

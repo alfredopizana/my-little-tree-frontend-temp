@@ -10,11 +10,11 @@ type Props = {
 const PostCard = ({post}:Props)=> {
     const plant = post;
     return  <Card sx={{background : '#F7F8F7'}}>
-                <CardMedia
-                    component="img"
-                    height="194"
-                    image="https://picsum.photos/400/300"
-                    alt="Paella dish" 
+                 <CardMedia
+                component="img"
+                height="180"
+                image={post.imageUrl || "https://picsum.photos/400/300"}
+                alt="Paella dish"
                 />
                 <CardContent>                    
                 <Grid container spacing={2}>
