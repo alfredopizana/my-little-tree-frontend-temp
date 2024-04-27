@@ -26,7 +26,7 @@ const PostCard = ({post}:Props)=> {
                         /> 
                     </Grid> 
                     <Grid item xs={11}>
-                        {post.plantId.nickname}
+                        {post.nickname}
                     </Grid>                                          
                 </Grid>
                 <Typography variant="h5" color="text.primary" my={2}>
