@@ -21,7 +21,7 @@ import { SignedIn  } from "@clerk/nextjs";
 const pages = [
     {displayName: 'Home', route: "/home"}, 
     {displayName: 'My Plants', route: "/my-plants"},
-    {displayName: 'Diagnose Plant 🅱️', route: "/diagnose-plant/beta"}
+    {displayName: 'Diagnose Plant 🅱️', route: "/plant-diagnose/beta"}
   ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
